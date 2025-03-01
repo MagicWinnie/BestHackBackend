@@ -1,0 +1,44 @@
+services:
+  besthack-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: besthack-backend
+    depends_on:
+      - besthack-mongodb
+    ports:
+      - "8888:8000"
+    networks:
+      - besthack-network
+    env_file:
+      - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+
+  besthack-mongodb:
+    image: mongo:8
+    container_name: besthack-mongodb
+    networks:
+      - besthack-network
+    restart: on-failure
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - besthack-mongodb-data:/data/db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+networks:
+  besthack-network:
+    driver: bridge
+
+volumes:
+  besthack-mongodb-data:
