@@ -66,3 +66,7 @@ class LotService:
         if lot is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lot not found")
         return lot
+
+    @staticmethod
+    async def get_lots() -> list[Lot]:
+        return await LotRepository.get_lots()

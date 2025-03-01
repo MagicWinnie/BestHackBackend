@@ -38,3 +38,7 @@ class LotRepository:
             lot.price_per_ton = update_lot.price_per_ton
 
         return await lot.save()
+
+    @staticmethod
+    async def get_lots() -> list[Lot]:
+        return await Lot.find_all().to_list()
