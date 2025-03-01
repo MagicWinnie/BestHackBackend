@@ -6,4 +6,5 @@ pymongo~=4.11.1
 beanie~=1.29.0
 
 bcrypt~=4.3.0
+cryptography~=44.0.1
 pyjwt~=2.10.1
