@@ -14,6 +14,11 @@ async def upload_csv(file: Annotated[UploadFile, File(...)]):
     return await LotService.upload_csv(file)
 
 
+@router.get("/{number}", response_model=Lot)
+async def get_lot(number: int):
+    return await LotService.get_lot_by_id(number)
+
+
 @router.put("/{number}", response_model=Lot)
 async def update_lot(number: int, update_lot: LotUpdateSchema):
     return await LotService.update_lot(number, update_lot)
