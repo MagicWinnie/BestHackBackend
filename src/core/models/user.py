@@ -15,3 +15,6 @@ class User(Document):
     password_hash: str
     role: UserRole
     is_active: bool = True
+
+    class Settings:
+        name = "users"
