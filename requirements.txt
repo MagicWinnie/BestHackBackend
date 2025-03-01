@@ -1,0 +1,6 @@
+fastapi[standard]~=0.115.10
+pydantic~=2.10.6
+pydantic-settings~=2.8.1
+
+pymongo~=4.11.1
+beanie~=1.29.0
