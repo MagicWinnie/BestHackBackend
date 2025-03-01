@@ -19,6 +19,19 @@ async def create_user(email: str, password_hash: str, role: UserRole):
     return await UserService.create_user(email, password_hash, role)
 
 
+@router.put("/", response_model=UserResponseSchema, dependencies=[Depends(APIKeyAuth(settings.APP_API_KEY))])
+async def update_user(
+    user_id: UUID,
+    email: str | None = None,
+    password_hash: str | None = None,
+    role: UserRole | None = None,
+):
+    """
+    Returns 404 error code if user not found.
+    """
+    return await UserService.update_user(user_id, email, password_hash, role)
+
+
 @router.get("/", response_model=UserResponseSchema)
 async def get_user(user_id: UUID):
     """
