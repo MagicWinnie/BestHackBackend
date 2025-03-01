@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from typing import Annotated
 
@@ -11,6 +12,8 @@ from src.core.config import settings
 from src.core.models import User
 from src.core.repositories import UserRepository
 from src.core.repositories.blacklist_jwt import BlacklistJWTRepository
+
+logger = logging.getLogger(__name__)
 
 
 async def validate_credentials(creds: CredentialsSchema) -> User:
@@ -43,6 +46,7 @@ async def get_current_token_payload(token: str) -> JWTData:
             detail="Token has expired. Please log in again.",
         ) from e
     except (jwt.exceptions.InvalidTokenError, ValidationError) as e:
+        logger.error("Invalid token error: %s", e)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token error") from e
 
 
