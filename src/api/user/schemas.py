@@ -10,3 +10,9 @@ class UserResponseSchema(BaseModel):
     email: str
     role: UserRole
     is_active: bool
+
+
+class UserUpdateSchema(BaseModel):
+    email: str | None = None
+    password_hash: str | None = None
+    role: UserRole | None = None
