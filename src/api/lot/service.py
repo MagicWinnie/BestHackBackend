@@ -5,7 +5,7 @@ import pandas as pd
 from fastapi import HTTPException, UploadFile, status
 from pydantic import ValidationError
 
-from src.api.lot.schemas import LotUpdateSchema
+from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
 from src.core.config import settings
 from src.core.models.lot import Lot
 from src.core.repositories.lot import LotRepository
@@ -70,3 +70,7 @@ class LotService:
     @staticmethod
     async def get_lots() -> list[Lot]:
         return await LotRepository.get_lots()
+
+    @staticmethod
+    async def create_lot(lot: LotCreateSchema) -> Lot:
+        return await LotRepository.create_lot(lot)

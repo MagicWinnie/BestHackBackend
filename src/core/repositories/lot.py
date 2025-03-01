@@ -1,4 +1,4 @@
-from src.api.lot.schemas import LotUpdateSchema
+from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
 from src.core.models import Lot
 
 
@@ -42,3 +42,7 @@ class LotRepository:
     @staticmethod
     async def get_lots() -> list[Lot]:
         return await Lot.find_all().to_list()
+
+    @staticmethod
+    async def create_lot(lot: LotCreateSchema) -> Lot:
+        return await Lot(**lot.model_dump()).save()

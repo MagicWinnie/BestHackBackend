@@ -15,3 +15,14 @@ class LotUpdateSchema(BaseModel):
     status: LotStatus | None = None
     price: DecimalAnnotation | None = None
     price_per_ton: DecimalAnnotation | None = None
+
+
+class LotCreateSchema(BaseModel):
+    date: datetime
+    code_nb: int
+    code_fuel: int
+    start_weight: DecimalAnnotation
+    available_balance: DecimalAnnotation
+    status: LotStatus
+    price: DecimalAnnotation
+    price_per_ton: DecimalAnnotation
