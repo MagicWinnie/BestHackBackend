@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 
 from src.api.auth.dependencies import RefreshTokenUserGetter, validate_credentials
 from src.api.auth.service import AuthService
@@ -24,8 +24,8 @@ def refresh_access_token(user: Annotated[User, Depends(RefreshTokenUserGetter())
 
 
 @router.get("/validate")
-def is_authorized(request: Request):
-    if request.cookies.get("access_token") is None or request.cookies.get("refresh_token") is None:
+def is_authorized(access_token: Annotated[str | None, Cookie()], refresh_token: Annotated[str | None, Cookie()]):
+    if access_token is None or refresh_token is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
 
