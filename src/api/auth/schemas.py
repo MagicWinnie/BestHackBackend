@@ -4,8 +4,6 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from src.core.models import UserRole
-
 
 class TokenType(str, Enum):
     ACCESS = "access"
@@ -28,13 +26,3 @@ class TokenInfo(BaseModel):
 class CredentialsSchema(BaseModel):
     email: str
     password: str
-
-
-class ValidateReturnSchema(BaseModel):
-    admin_id: UUID
-    login: str
-    full_name: str
-    role: UserRole
-
-    token_issued_at: datetime
-    token_expires_at: datetime
