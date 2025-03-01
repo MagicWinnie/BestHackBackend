@@ -11,8 +11,7 @@ from src.api.auth.schemas import CredentialsSchema, JWTData, TokenType
 from src.core.auth.password_handler import PasswordHandler
 from src.core.config import settings
 from src.core.models import User
-from src.core.repositories import UserRepository
-from src.core.repositories.blacklist_jwt import BlacklistJWTRepository
+from src.core.repositories import BlacklistJWTRepository, UserRepository
 
 logger = logging.getLogger(__name__)
 
