@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from src.api import routers
 from src.core.config import settings
 from src.core.database import init_database
 
@@ -29,7 +30,5 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
-@app.get("/")
-def root():
-    return {"message": "Hello, World!"}
+for router in routers:
+    app.include_router(router)
