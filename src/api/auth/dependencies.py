@@ -59,17 +59,11 @@ class UserGetterFromToken:
             detail=f"Invalid token type {current_token_type}. Expected {self.token_type}",
         )
 
-    async def __call__(
-        self,
-        access_token: Annotated[str | None, Cookie()],
-        refresh_token: Annotated[str | None, Cookie()],
-    ) -> User:
-        if self.token_type == TokenType.ACCESS and access_token is not None:
+    async def __call__(self, access_token: Annotated[str, Cookie()], refresh_token: Annotated[str, Cookie()]) -> User:
+        if self.token_type == TokenType.ACCESS:
             payload = await get_current_token_payload(access_token)
-        elif self.token_type == TokenType.REFRESH and refresh_token is not None:
-            payload = await get_current_token_payload(refresh_token)
         else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token not found")
+            payload = await get_current_token_payload(refresh_token)
 
         self._validate_token_type(payload)
         if self.token_type == TokenType.REFRESH:
