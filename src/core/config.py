@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     MONGO_INITDB_ROOT_USERNAME: str = Field(default=...)
     MONGO_INITDB_ROOT_PASSWORD: str = Field(default=...)
 
+    APP_API_KEY: str = Field(default=...)
+
     model_config = SettingsConfigDict(env_file=".env")
 
 
