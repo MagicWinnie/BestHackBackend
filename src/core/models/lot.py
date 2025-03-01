@@ -1,8 +1,7 @@
 from datetime import datetime
-from decimal import Decimal
 from enum import Enum
 
-from beanie import Document
+from beanie import DecimalAnnotation, Document
 from pydantic import ConfigDict
 
 
@@ -27,20 +26,20 @@ class Lot(Document):
     code_fuel: int
     """Код КССС Топлива (Число)"""
 
-    start_weight: Decimal
+    start_weight: DecimalAnnotation
     """Стартовой вес (Число, доступный объём лота в литрах)"""
 
-    available_balance: Decimal | None = None
+    available_balance: DecimalAnnotation | None = None
     """Доступный остаток (Число, по умолчанию стартовый вес, уменьшается при оформлении заказа)"""
 
     status: LotStatus
     """Статус (Строка, по умолчанию «Подтвержден», «Продан» при оформлении заказов на весь объём, «Неактивен» при
     оставшимся доступном объёма в лоте при наступлении даты следующий за датой лота)"""
 
-    price: Decimal | None = None
+    price: DecimalAnnotation | None = None
     """Цена лота (Число, общая стоимость лота в рублях (цена за 1 тонну * доступный остаток))"""
 
-    price_per_ton: Decimal
+    price_per_ton: DecimalAnnotation
     """Цена за 1 тонну. (Число)"""
 
     def model_post_init(self, __context):
