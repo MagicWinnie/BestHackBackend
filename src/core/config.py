@@ -21,6 +21,18 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in minutes
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days in minutes
 
+    LOT_COLUMNS: list[str] = [
+        "number",
+        "date",
+        "code_nb",
+        "code_fuel",
+        "start_weight",
+        "available_balance",
+        "status",
+        "price",
+        "price_per_ton",
+    ]
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

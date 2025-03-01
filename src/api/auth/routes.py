@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 
 from src.api.auth.dependencies import RefreshTokenUserGetter, validate_credentials
 from src.api.auth.service import AuthService
@@ -21,6 +21,12 @@ def refresh_access_token(user: Annotated[User, Depends(RefreshTokenUserGetter())
     tokens = AuthService.refresh_tokens(user)
     AuthService.set_auth_cookies(response, tokens)
     return {"message": "Access token refreshed successfully"}
+
+
+@router.get("/is-authorized")
+def is_authorized(request: Request):
+    if request.cookies.get("access_token") is None or request.cookies.get("refresh_token") is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
 
 @router.post("/logout")
