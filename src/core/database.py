@@ -2,7 +2,7 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.core.config import settings
-from src.core.models import BlacklistJWT, Lot, User
+from src.core.models import BlacklistJWT, Lot, Order, User
 
 
 async def init_database():
@@ -13,5 +13,5 @@ async def init_database():
     )
     await init_beanie(
         database=client.besthack,
-        document_models=[BlacklistJWT, Lot, User],
+        document_models=[BlacklistJWT, Lot, Order, User],
     )
