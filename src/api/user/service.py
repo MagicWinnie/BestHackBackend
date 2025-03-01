@@ -36,10 +36,3 @@ class UserService:
         user.role = role or user.role
         await user.save()
         return UserResponseSchema(user_id=user.user_id, email=user.email, role=user.role, is_active=user.is_active)
-
-    @staticmethod
-    async def create_user(email: str, password_hash: str, role: UserRole) -> UserResponseSchema:
-        if await UserRepository.get_user_by_email(email):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with this email already exists")
-        user = await UserRepository.create_user(email, password_hash, role)
-        return UserResponseSchema(user_id=user.user_id, email=user.email, role=user.role, is_active=user.is_active)

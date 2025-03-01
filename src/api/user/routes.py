@@ -6,17 +6,8 @@ from src.api.user.schemas import UserResponseSchema, UserUpdateSchema
 from src.api.user.service import UserService
 from src.core.auth.api_key import APIKeyAuth
 from src.core.config import settings
-from src.core.models import UserRole
 
 router = APIRouter(prefix="/user", tags=["user"])
-
-
-@router.post("/", response_model=UserResponseSchema, dependencies=[Depends(APIKeyAuth(settings.APP_API_KEY))])
-async def create_user(email: str, password_hash: str, role: UserRole):
-    """
-    Returns 400 error code if user already exists.
-    """
-    return await UserService.create_user(email, password_hash, role)
 
 
 @router.put("/", response_model=UserResponseSchema, dependencies=[Depends(APIKeyAuth(settings.APP_API_KEY))])
