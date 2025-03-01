@@ -15,8 +15,6 @@ class Settings(BaseSettings):
     MONGO_INITDB_ROOT_USERNAME: str = Field(default=...)
     MONGO_INITDB_ROOT_PASSWORD: str = Field(default=...)
 
-    APP_API_KEY: str = Field(default=...)
-
     PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-private.pem"
     PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-public.pem"
     ALGORITHM: str = "RS256"
