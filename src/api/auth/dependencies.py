@@ -46,31 +46,38 @@ async def get_current_token_payload(token: str) -> JWTData:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token error") from e
 
 
-class UserGetterFromToken:
-    def __init__(self, token_type: TokenType):
-        self.token_type = token_type
+class AccessTokenUserGetter:
+    async def __call__(self, access_token: Annotated[str, Cookie()]) -> User:
+        payload = await get_current_token_payload(access_token)
+        if payload.token_type != TokenType.ACCESS:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid token type {payload.token_type}. Expected {TokenType.ACCESS}",
+            )
 
-    def _validate_token_type(self, payload: JWTData) -> bool:
-        current_token_type = payload.token_type
-        if current_token_type == self.token_type:
-            return True
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid token type {current_token_type}. Expected {self.token_type}",
-        )
+        user = await UserRepository.get_user_by_id(user_id=payload.user_id)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+        if not user.is_active:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active")
 
-    async def __call__(self, access_token: Annotated[str, Cookie()], refresh_token: Annotated[str, Cookie()]) -> User:
-        if self.token_type == TokenType.ACCESS:
-            payload = await get_current_token_payload(access_token)
-        else:
-            payload = await get_current_token_payload(refresh_token)
+        return user
 
-        self._validate_token_type(payload)
-        if self.token_type == TokenType.REFRESH:
-            if await BlacklistJWTRepository.is_token_blacklisted(payload.jti):
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Refresh token is invalid")
-            if datetime.now(timezone.utc) > payload.exp:
-                await BlacklistJWTRepository.add_token_uuid_to_blacklist(payload.jti)
+
+class RefreshTokenUserGetter:
+    async def __call__(self, refresh_token: Annotated[str, Cookie()]) -> User:
+        payload = await get_current_token_payload(refresh_token)
+        if payload.token_type != TokenType.REFRESH:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid token type {payload.token_type}. Expected {TokenType.REFRESH}",
+            )
+
+        if await BlacklistJWTRepository.is_token_blacklisted(payload.jti):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Refresh token is invalid")
+
+        if datetime.now(timezone.utc) > payload.exp:
+            await BlacklistJWTRepository.add_token_uuid_to_blacklist(payload.jti)
 
         user = await UserRepository.get_user_by_id(user_id=payload.user_id)
         if user is None:
