@@ -5,6 +5,7 @@ import pandas as pd
 from fastapi import HTTPException, UploadFile, status
 from pydantic import ValidationError
 
+from src.api.lot.schemas import LotUpdateSchema
 from src.core.config import settings
 from src.core.models.lot import Lot
 from src.core.repositories.lot import LotRepository
@@ -58,3 +59,10 @@ class LotService:
     async def delete_lot(number: int) -> None:
         lot = await LotService.get_lot_by_id(number)
         await lot.delete()
+
+    @staticmethod
+    async def update_lot(number: int, update_lot: LotUpdateSchema) -> Lot:
+        lot = await LotRepository.update_lot(number, update_lot)
+        if lot is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lot not found")
+        return lot
