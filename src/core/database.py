@@ -2,7 +2,7 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.core.config import settings
-from src.core.models import User
+from src.core.models import BlacklistJWT, User
 
 
 async def init_database():
@@ -11,4 +11,7 @@ async def init_database():
         connectTimeoutMS=5000,
         timeoutms=5000,
     )
-    await init_beanie(database=client.besthack, document_models=[User])
+    await init_beanie(
+        database=client.besthack,
+        document_models=[User, BlacklistJWT],
+    )
