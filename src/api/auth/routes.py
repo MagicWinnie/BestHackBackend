@@ -18,14 +18,12 @@ def generate_tokens(user: Annotated[User, Depends(validate_credentials)], respon
         key="access_token",
         value=tokens.access_token,
         httponly=True,
-        secure=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
     response.set_cookie(
         key="refresh_token",
         value=tokens.refresh_token,
         httponly=True,
-        secure=True,
         max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
     )
     return tokens
