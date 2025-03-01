@@ -23,7 +23,7 @@ def refresh_access_token(user: Annotated[User, Depends(RefreshTokenUserGetter())
     return {"message": "Access token refreshed successfully"}
 
 
-@router.get("/is-authorized")
+@router.get("/validate")
 def is_authorized(request: Request):
     if request.cookies.get("access_token") is None or request.cookies.get("refresh_token") is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
