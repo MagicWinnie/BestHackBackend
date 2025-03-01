@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 class LotService:
     @staticmethod
     async def upload_csv(file: UploadFile) -> int:
-        if file.content_type != "text/csv":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV (MIME: text/csv)")
+        if file.content_type not in ("text/csv", "application/vnd.ms-excel"):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV")
 
         content = await file.read()
         stringio = StringIO(content.decode("utf-8"))
