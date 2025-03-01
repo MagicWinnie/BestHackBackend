@@ -20,13 +20,21 @@ class LotRepository:
         if lot is None:
             return None
 
-        lot.date = update_lot.date or lot.date
-        lot.code_nb = update_lot.code_nb or lot.code_nb
-        lot.code_fuel = update_lot.code_fuel or lot.code_fuel
-        lot.start_weight = update_lot.start_weight or lot.start_weight
-        lot.available_balance = update_lot.available_balance or lot.available_balance
-        lot.status = update_lot.status or lot.status
-        lot.price = update_lot.price or lot.price
-        lot.price_per_ton = update_lot.price_per_ton or lot.price_per_ton
+        if update_lot.date is not None:
+            lot.date = update_lot.date
+        if update_lot.code_nb is not None:
+            lot.code_nb = update_lot.code_nb
+        if update_lot.code_fuel is not None:
+            lot.code_fuel = update_lot.code_fuel
+        if update_lot.start_weight is not None:
+            lot.start_weight = update_lot.start_weight
+        if update_lot.available_balance is not None:
+            lot.available_balance = update_lot.available_balance
+        if update_lot.status is not None:
+            lot.status = update_lot.status
+        if update_lot.price is not None:
+            lot.price = update_lot.price
+        if update_lot.price_per_ton is not None:
+            lot.price_per_ton = update_lot.price_per_ton
 
         return await lot.save()
