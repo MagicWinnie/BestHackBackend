@@ -10,3 +10,8 @@ router = APIRouter(prefix="/lot", tags=["lot"])
 @router.post("/upload", response_model=int)
 async def upload_csv(file: Annotated[UploadFile, File(...)]):
     return await LotService.upload_csv(file)
+
+
+@router.delete("/{number}")
+async def delete_lot(number: int):
+    await LotService.delete_lot(number)

@@ -46,3 +46,15 @@ class LotService:
 
         result = await Lot.insert_many(lots_to_save)
         return len(result.inserted_ids)
+
+    @staticmethod
+    async def get_lot_by_id(number: int) -> Lot:
+        lot = await LotRepository.get_lot_by_id(number)
+        if lot is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lot not found")
+        return lot
+
+    @staticmethod
+    async def delete_lot(number: int) -> None:
+        lot = await LotService.get_lot_by_id(number)
+        await lot.delete()
