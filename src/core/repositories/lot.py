@@ -45,4 +45,4 @@ class LotRepository:
 
     @staticmethod
     async def create_lot(lot: LotCreateSchema) -> Lot:
-        return await Lot(**lot.model_dump()).save()
+        return await Lot(number=await LotRepository.get_new_lot_number(), **lot.model_dump()).save()
