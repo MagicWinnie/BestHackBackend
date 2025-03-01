@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
 from src.core.config import settings
-from src.core.models.lot import Lot
+from src.core.models.lot import Lot, LotStatus
 from src.core.repositories.lot import LotRepository
 
 logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class LotService:
 
     @staticmethod
     async def get_lots(skip: int, limit: int) -> list[Lot]:
-        return await LotRepository.get_lots(skip, limit)
+        return await LotRepository.get_lots(skip, limit, [LotStatus.CONFIRMED])
 
     @staticmethod
     async def create_lot(lot: LotCreateSchema) -> Lot:
