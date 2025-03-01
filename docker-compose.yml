@@ -18,7 +18,6 @@ services:
         max-size: "20m"
         max-file: "5"
 
-
   besthack-mongodb:
     image: mongo:8
     container_name: besthack-mongodb
