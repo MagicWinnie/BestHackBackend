@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -11,7 +10,7 @@ class TokenType(str, Enum):
 
 
 class JWTData(BaseModel):
-    user_id: UUID
+    user_id: str
     exp: datetime
     iat: datetime
     jti: str

@@ -13,16 +13,16 @@ class AuthService:
     @staticmethod
     def _create_jwt(user_id: UUID, token_type: TokenType, expire_minutes: int) -> str:
         now = datetime.now(timezone.utc)
-        expire = now + timedelta(minutes=expire_minutes)
+        exp = now + timedelta(minutes=expire_minutes)
         jwt_payload = JWTData(
-            user_id=user_id,
-            exp=expire,
+            user_id=str(user_id),
+            exp=exp,
             iat=now,
             jti=str(uuid4()),
             token_type=token_type,
         )
         return jwt.encode(
-            jwt_payload.model_dump(mode="json"),
+            jwt_payload.model_dump(),
             key=settings.PRIVATE_KEY_PATH.read_text(),
             algorithm=settings.ALGORITHM,
         )

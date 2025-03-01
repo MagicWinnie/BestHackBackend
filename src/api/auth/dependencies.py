@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from typing import Annotated
+from uuid import UUID
 
 import jwt
 from fastapi import Cookie, HTTPException, status
@@ -59,7 +60,7 @@ class AccessTokenUserGetter:
                 detail=f"Invalid token type {payload.token_type}. Expected {TokenType.ACCESS}",
             )
 
-        user = await UserRepository.get_user_by_id(user_id=payload.user_id)
+        user = await UserRepository.get_user_by_id(user_id=UUID(payload.user_id))
         if user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
         if not user.is_active:
@@ -83,7 +84,7 @@ class RefreshTokenUserGetter:
         if datetime.now(timezone.utc) > payload.exp:
             await BlacklistJWTRepository.add_token_uuid_to_blacklist(payload.jti)
 
-        user = await UserRepository.get_user_by_id(user_id=payload.user_id)
+        user = await UserRepository.get_user_by_id(user_id=UUID(payload.user_id))
         if user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
         if not user.is_active:
