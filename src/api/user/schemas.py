@@ -17,3 +17,9 @@ class UserUpdateSchema(BaseModel):
     password_hash: str | None = None
     role: UserRole | None = None
     is_active: bool | None = None
+
+
+class UserCreateSchema(BaseModel):
+    email: str
+    password: str
+    role: UserRole
