@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
 import jwt
+from fastapi import Response
 
 from src.api.auth.schemas import JWTData, TokenInfo, TokenType
 from src.core.config import settings
@@ -53,3 +54,18 @@ class AuthService:
             expire_minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES,
         )
         return TokenInfo(access_token=access_token, refresh_token=new_refresh_token)
+
+    @staticmethod
+    def set_auth_cookies(response: Response, tokens: TokenInfo):
+        response.set_cookie(
+            key="access_token",
+            value=tokens.access_token,
+            httponly=True,
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens.refresh_token,
+            httponly=True,
+            max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+        )
