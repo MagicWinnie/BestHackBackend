@@ -4,3 +4,5 @@ pydantic-settings~=2.8.1
 
 pymongo~=4.11.1
 beanie~=1.29.0
+
+bcrypt~=4.3.0

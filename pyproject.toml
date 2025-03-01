@@ -12,7 +12,6 @@ select = [
     "A",      # flake8-builtins
     "B",      # flake8-bugbear
     "E",      # pycodestyle
-    "D",      # pydocstyle
     "F",      # pyflakes
     "G",      # flake8-logging-format
     "I",      # isort
@@ -33,14 +32,6 @@ select = [
 ]
 ignore = [
     "B008", # flake8-bugbear
-    "D100", # pycodestyle
-    "D101", # pycodestyle
-    "D102", # pycodestyle
-    "D103", # pycodestyle
-    "D104", # pycodestyle
-    "D105", # pycodestyle
-    "D200", # pycodestyle
-    "D212", # pycodestyle
 ]
 fixable = [
     "F401", # pyflakes
