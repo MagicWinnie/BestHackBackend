@@ -22,7 +22,7 @@ async def create_user(email: str, password_hash: str, role: UserRole):
 @router.put("/", response_model=UserResponseSchema, dependencies=[Depends(APIKeyAuth(settings.APP_API_KEY))])
 async def update_user(user_id: UUID, body: UserUpdateSchema):
     """
-    Returns 404 error code if user not found.
+    Returns 404 error code if user not found or 400 error code if user with this email already exists.
     """
     return await UserService.update_user(user_id, body.email, body.password_hash, body.role)
 

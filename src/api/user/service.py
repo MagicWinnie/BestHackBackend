@@ -25,7 +25,13 @@ class UserService:
         user = await UserRepository.get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        user.email = email or user.email
+        if email is not None:
+            if await UserRepository.get_user_by_email(email):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="User with this email already exists",
+                )
+            user.email = email
         user.password_hash = password_hash or user.password_hash
         user.role = role or user.role
         await user.save()
