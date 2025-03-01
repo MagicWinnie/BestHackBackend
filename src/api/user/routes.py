@@ -6,10 +6,10 @@ from src.api.auth.dependencies import AccessTokenUserGetter
 from src.api.user.schemas import UserResponseSchema, UserUpdateSchema
 from src.api.user.service import UserService
 
-router = APIRouter(prefix="/user", tags=["user"])
+router = APIRouter(prefix="/user", tags=["user"], dependencies=[Depends(AccessTokenUserGetter())])
 
 
-@router.put("/", response_model=UserResponseSchema, dependencies=[Depends(AccessTokenUserGetter())])
+@router.put("/", response_model=UserResponseSchema)
 async def update_user(user_id: UUID, body: UserUpdateSchema):
     """
     Returns 404 error code if user not found or 400 error code if user with this email already exists.
@@ -17,7 +17,7 @@ async def update_user(user_id: UUID, body: UserUpdateSchema):
     return await UserService.update_user(user_id, body.email, body.password_hash, body.role)
 
 
-@router.get("/", response_model=UserResponseSchema, dependencies=[Depends(AccessTokenUserGetter())])
+@router.get("/", response_model=UserResponseSchema)
 async def get_user(user_id: UUID):
     """
     Returns 404 error code if user not found.
