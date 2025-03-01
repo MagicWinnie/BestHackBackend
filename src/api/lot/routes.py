@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, Query, UploadFile
 
 from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
 from src.api.lot.service import LotService
@@ -20,8 +20,8 @@ async def create_lot(lot: LotCreateSchema):
 
 
 @router.get("/", response_model=list[Lot])
-async def get_lots():
-    return await LotService.get_lots()
+async def get_lots(skip: Annotated[int, Query(ge=0)] = 0, limit: Annotated[int, Query(ge=0)] = 0):
+    return await LotService.get_lots(skip, limit)
 
 
 @router.get("/{number}", response_model=Lot)

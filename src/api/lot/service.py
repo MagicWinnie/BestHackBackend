@@ -68,8 +68,8 @@ class LotService:
         return lot
 
     @staticmethod
-    async def get_lots() -> list[Lot]:
-        return await LotRepository.get_lots()
+    async def get_lots(skip: int, limit: int) -> list[Lot]:
+        return await LotRepository.get_lots(skip, limit)
 
     @staticmethod
     async def create_lot(lot: LotCreateSchema) -> Lot:

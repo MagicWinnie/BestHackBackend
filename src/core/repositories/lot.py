@@ -40,8 +40,8 @@ class LotRepository:
         return await lot.save()
 
     @staticmethod
-    async def get_lots() -> list[Lot]:
-        return await Lot.find_all().to_list()
+    async def get_lots(skip: int, limit: int) -> list[Lot]:
+        return await Lot.find_all().skip(skip).limit(limit).to_list()
 
     @staticmethod
     async def create_lot(lot: LotCreateSchema) -> Lot:
