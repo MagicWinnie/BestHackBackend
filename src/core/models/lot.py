@@ -48,3 +48,6 @@ class Lot(Document):
             self.available_balance = self.start_weight
         if self.price is None:
             self.price = self.price_per_ton * self.available_balance
+
+    class Settings:
+        name = "lots"
