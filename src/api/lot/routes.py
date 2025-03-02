@@ -1,12 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, File, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Query, UploadFile
 
+from src.api.auth.dependencies import AccessTokenUserGetter
 from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema, UploadFtpSchema
 from src.api.lot.service import LotService
 from src.core.models.lot import Lot
 
-router = APIRouter(prefix="/lot", tags=["lot"])
+router = APIRouter(prefix="/lot", tags=["lot"], dependencies=[Depends(AccessTokenUserGetter())])
 
 
 @router.post("/upload", response_model=int)
