@@ -71,33 +71,42 @@
 ### Локально
 
 1. Склонируйте репозиторий:
+
    `git clone https://github.com/MagicWinnie/BestHackBackend.git`
 
 2. Перейдите в директорию проекта:
+
    `cd BestHackBackend`
 
 3. Создайте виртуальное окружение:
+
    `python -m venv .venv`
 
 4. Активируйте виртуальное окружение:
-   Windows: `venv\Scripts\activate`
+
+   Windows: `venv\Scripts\activate`  
    Unix/Linux: `source venv/bin/activate`
 
 5. Установите зависимости:
+
    `pip install -r requirements.txt`
 
 6. Создайте файл `.env` с переменными окружения.
 
 7. Запустите сервер приложения:
+
    `uvicorn src.main:app --host 0.0.0.0 --port 8888`
 
 ### Docker
 
 1. Склонируйте репозиторий:
+
    `git clone https://github.com/MagicWinnie/BestHackBackend.git`
 
 2. Перейдите в директорию проекта:
+
    `cd BestHackBackend`
 
 3. Запустите Docker Compose:
+
    `docker-compose up --build -d`
