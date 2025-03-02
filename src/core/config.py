@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-private.pem"
     PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-public.pem"
     ALGORITHM: str = "RS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in minutes
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days in minutes
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days in minutes
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 90  # 90 days in minutes
 
     FTP_TIMEOUT: int = 3  # in seconds
 
