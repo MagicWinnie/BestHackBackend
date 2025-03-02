@@ -29,7 +29,7 @@ class LotCreateSchema(BaseModel):
 
 
 class UploadFtpSchema(BaseModel):
-    ip: str
+    host: str
     username: str
     password: str
     path: str

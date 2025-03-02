@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # in minutes
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days in minutes
 
+    FTP_TIMEOUT: int = 3  # in seconds
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

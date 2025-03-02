@@ -17,7 +17,7 @@ async def upload_csv(file: Annotated[UploadFile, File(...)]):
 
 @router.post("/upload/ftp", response_model=int)
 async def upload_ftp(body: UploadFtpSchema):
-    return await LotService.upload_ftp(body.ip, body.username, body.password, body.path)
+    return await LotService.upload_ftp(body.host, body.username, body.password, body.path)
 
 
 @router.post("/", response_model=Lot)

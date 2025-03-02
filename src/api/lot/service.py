@@ -9,6 +9,7 @@ from io import StringIO
 from fastapi import HTTPException, UploadFile, status
 
 from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
+from src.core.config import settings
 from src.core.models.lot import Lot, LotStatus
 from src.core.repositories.lot import LotRepository
 
@@ -62,9 +63,9 @@ class LotService:
         return await LotRepository.create_lot(lot)
 
     @staticmethod
-    async def upload_ftp(ip: str, username: str, password: str, path: str) -> int:
+    async def upload_ftp(host: str, username: str, password: str, path: str) -> int:
         try:
-            ftp = FTP(ip)
+            ftp = FTP(host, timeout=settings.FTP_TIMEOUT)
             ftp.login(user=username, passwd=password)
         except Exception as e:
             logger.error("Error connecting to FTP: %s", e)
