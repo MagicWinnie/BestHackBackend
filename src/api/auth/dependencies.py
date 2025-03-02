@@ -1,10 +1,10 @@
 import logging
 from datetime import datetime, timezone
-from typing import Annotated
 from uuid import UUID
 
 import jwt
-from fastapi import Cookie, HTTPException, status
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import ValidationError
 
 from src.api.auth.schemas import CredentialsSchema, JWTData, TokenType
@@ -31,10 +31,10 @@ async def validate_credentials(creds: CredentialsSchema) -> User:
     return user
 
 
-async def get_current_token_payload(token: str) -> JWTData:
+async def get_current_token_payload(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())) -> JWTData:
     try:
         decoded = jwt.decode(
-            token,
+            credentials.credentials,
             key=settings.PUBLIC_KEY_PATH.read_text(),
             algorithms=[settings.ALGORITHM],
             options={"verify_exp": True},
@@ -51,8 +51,7 @@ async def get_current_token_payload(token: str) -> JWTData:
 
 
 class AccessTokenUserGetter:
-    async def __call__(self, access_token: Annotated[str, Cookie()]) -> User:
-        payload = await get_current_token_payload(access_token)
+    async def __call__(self, payload: JWTData = Depends(get_current_token_payload)) -> User:
         if payload.token_type != TokenType.ACCESS:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -69,8 +68,7 @@ class AccessTokenUserGetter:
 
 
 class RefreshTokenUserGetter:
-    async def __call__(self, refresh_token: Annotated[str, Cookie()]) -> User:
-        payload = await get_current_token_payload(refresh_token)
+    async def __call__(self, payload: JWTData = Depends(get_current_token_payload)) -> User:
         if payload.token_type != TokenType.REFRESH:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
