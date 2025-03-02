@@ -81,7 +81,10 @@ class LotService:
         new_lot_number = await LotRepository.get_new_lot_number()
         lots, new_lot_number = LotService._parse_lots(reader, new_lot_number)
 
-        ftp.quit()
+        try:
+            ftp.quit()
+        except Exception as e:
+            logger.error("Error quitting FTP: %s", e)
 
         if lots:
             await Lot.insert_many(lots)
