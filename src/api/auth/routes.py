@@ -15,7 +15,7 @@ def generate_tokens(user: Annotated[User, Depends(validate_credentials)], respon
     return AuthService.generate_tokens(user)
 
 
-@router.post("/validate", response_model=JWTData)
+@router.get("/validate", response_model=JWTData)
 def validate_token(payload: Annotated[JWTData, Depends(get_current_token_payload)]):
     return payload
 
