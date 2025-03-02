@@ -63,8 +63,12 @@ class LotService:
 
     @staticmethod
     async def upload_ftp(ip: str, username: str, password: str, path: str) -> int:
-        ftp = FTP(ip)
-        ftp.login(user=username, passwd=password)
+        try:
+            ftp = FTP(ip)
+            ftp.login(user=username, passwd=password)
+        except Exception as e:
+            logger.error("Error connecting to FTP: %s", e)
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error connecting to FTP") from e
 
         buffer = io.BytesIO()
         ftp.retrbinary(f"RETR {path}", buffer.write)
