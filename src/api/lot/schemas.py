@@ -26,3 +26,10 @@ class LotCreateSchema(BaseModel):
     status: LotStatus
     price: DecimalAnnotation
     price_per_ton: DecimalAnnotation
+
+
+class UploadFtpSchema(BaseModel):
+    ip: str
+    username: str
+    password: str
+    path: str

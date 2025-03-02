@@ -1,12 +1,14 @@
+import csv
+import io
 import logging
+from datetime import datetime
+from decimal import Decimal
+from ftplib import FTP
 from io import StringIO
 
-import pandas as pd
 from fastapi import HTTPException, UploadFile, status
-from pydantic import ValidationError
 
 from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
-from src.core.config import settings
 from src.core.models.lot import Lot, LotStatus
 from src.core.repositories.lot import LotRepository
 
@@ -20,33 +22,17 @@ class LotService:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV")
 
         content = await file.read()
-        stringio = StringIO(content.decode("utf-8"))
-        df = pd.read_csv(stringio)
-
-        if len(df.columns) != len(settings.LOT_COLUMNS):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"CSV file has {len(df.columns)} columns, expected {len(settings.LOT_COLUMNS)}",
-            )
-
-        df.columns = settings.LOT_COLUMNS
+        string_content = content.decode("utf-8")
+        string_io = StringIO(string_content)
+        reader = csv.reader(string_io)
 
         new_lot_number = await LotRepository.get_new_lot_number()
+        lots, new_lot_number = LotService._parse_lots(reader, new_lot_number)
 
-        lots_data = df.to_dict(orient="records")
-        lots_to_save = []
-        for lot_data in lots_data:
-            try:
-                lot_data["number"] = new_lot_number
-                lot = Lot(**lot_data)  # type: ignore
-                lots_to_save.append(lot)
-                new_lot_number += 1
-            except ValidationError as e:
-                logger.warning("Validation error: %s", e)
-                continue
+        if lots:
+            await Lot.insert_many(lots)
 
-        result = await Lot.insert_many(lots_to_save)
-        return len(result.inserted_ids)
+        return len(lots)
 
     @staticmethod
     async def get_lot_by_id(number: int) -> Lot:
@@ -74,3 +60,52 @@ class LotService:
     @staticmethod
     async def create_lot(lot: LotCreateSchema) -> Lot:
         return await LotRepository.create_lot(lot)
+
+    @staticmethod
+    async def upload_ftp(ip: str, username: str, password: str, path: str) -> int:
+        ftp = FTP(ip)
+        ftp.login(user=username, passwd=password)
+
+        buffer = io.BytesIO()
+        ftp.retrbinary(f"RETR {path}", buffer.write)
+        buffer.seek(0)
+
+        text_stream = io.TextIOWrapper(buffer, encoding="utf-8")
+        reader = csv.reader(text_stream)
+
+        new_lot_number = await LotRepository.get_new_lot_number()
+        lots, new_lot_number = LotService._parse_lots(reader, new_lot_number)
+
+        ftp.quit()
+
+        if lots:
+            await Lot.insert_many(lots)
+
+        return len(lots)
+
+    @staticmethod
+    def _parse_lots(reader, new_lot_number: int) -> tuple[list[Lot], int]:
+        lots = []
+
+        _ = next(reader, None)
+
+        for row in reader:
+            if len(row) == 9:
+                row = row[1:]
+            try:
+                lot = Lot(
+                    number=new_lot_number,
+                    date=datetime.fromisoformat(row[0]),
+                    code_nb=int(row[1]),
+                    code_fuel=int(row[2]),
+                    start_weight=Decimal(row[3]),
+                    available_balance=Decimal(row[4]) if row[4].strip() else None,
+                    status=LotStatus(row[5]),
+                    price=Decimal(row[6]) if row[6].strip() else None,
+                    price_per_ton=Decimal(row[7]),
+                )
+                lots.append(lot)
+                new_lot_number += 1
+            except Exception as e:
+                logger.warning("Error parsing row %s: %s", row, e)
+        return lots, new_lot_number

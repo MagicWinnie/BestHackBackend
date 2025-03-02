@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, Query, UploadFile
 
-from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema
+from src.api.lot.schemas import LotCreateSchema, LotUpdateSchema, UploadFtpSchema
 from src.api.lot.service import LotService
 from src.core.models.lot import Lot
 
@@ -12,6 +12,11 @@ router = APIRouter(prefix="/lot", tags=["lot"])
 @router.post("/upload", response_model=int)
 async def upload_csv(file: Annotated[UploadFile, File(...)]):
     return await LotService.upload_csv(file)
+
+
+@router.post("/upload/ftp", response_model=int)
+async def upload_ftp(body: UploadFtpSchema):
+    return await LotService.upload_ftp(body.ip, body.username, body.password, body.path)
 
 
 @router.post("/", response_model=Lot)

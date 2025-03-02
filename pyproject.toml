@@ -32,6 +32,7 @@ select = [
 ]
 ignore = [
     "B008", # flake8-bugbear
+    "S321", # flake8-bandit
 ]
 fixable = [
     "F401", # pyflakes
